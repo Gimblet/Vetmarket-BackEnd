@@ -17,22 +17,31 @@ import lombok.Data;
 @Entity
 @Data
 public class Producto {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer idProducto;
-	private double precio;
-	private int stock;
-	private String nombre, descripcion;
-	
-	@Lob
-	@Column(name = "img", columnDefinition = "LONGBLOB")
-	private byte[] img;
-	
-	@ManyToOne
-	@JsonIgnore
-	private Usuario usuario;
-	
-	@OneToMany(mappedBy = "producto")
-	@JsonIgnore
-	private List<DetalleOrdenCompra> detProducto;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer idProducto;
+
+    @Column
+    private double precio;
+
+    @Column
+    private int stock;
+
+    @Column
+    private String nombre;
+
+    @Column
+    private String descripcion;
+
+    @Lob
+    @Column(name = "img", columnDefinition = "LONGBLOB")
+    private byte[] img;
+
+    @ManyToOne
+    @JsonIgnore
+    private Usuario usuario;
+
+    @OneToMany(mappedBy = "producto")
+    @JsonIgnore
+    private List<DetalleOrdenCompra> detProducto;
 }
