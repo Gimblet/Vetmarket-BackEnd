@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface IProductoRepository extends JpaRepository<Producto, Integer> {
     Optional<List<Producto>> findAllByNombreIgnoreCaseContaining(String nombre);
 
-    Optional<List<Producto>> findAllByUsuario_IdUsuario(Long idUsuario);
+    Optional<List<Producto>> findAllByUsuario_IdUsuario(Long idVeterinario);
 }

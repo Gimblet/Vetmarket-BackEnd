@@ -29,8 +29,8 @@ public class ProductoService {
         return productoRepository.findAllByNombreIgnoreCaseContaining(nombre);
     }
 
-    public Optional<List<Producto>> obtenerProductosPorVeterinario(Long idUsuario) {
-        return productoRepository.findAllByUsuario_IdUsuario(idUsuario);
+    public Optional<List<Producto>> obtenerProductosPorVeterinario(Long idVeterinario) {
+        return productoRepository.findAllByUsuario_IdUsuario(idVeterinario);
     }
 
     public String actualizarProductoPorId(int id, Producto producto) {
