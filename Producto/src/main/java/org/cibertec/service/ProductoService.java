@@ -35,6 +35,7 @@ public class ProductoService {
 
     public String actualizarProductoPorId(int id, Producto producto) {
         if (productoRepository.existsById(id)) {
+            producto.setIdProducto(id);
             productoRepository.save(producto);
             return "Producto actualizado con exito";
         } else {
