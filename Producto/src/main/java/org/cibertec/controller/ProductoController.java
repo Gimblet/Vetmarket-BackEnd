@@ -35,8 +35,8 @@ public class ProductoController {
     }
 
     @GetMapping(value = "/buscar", params = "veterinario")
-    private Optional<List<Producto>> obtenerProductosPorVeterinario(@RequestParam Long idUsuario) {
-        return productoService.obtenerProductosPorVeterinario(idUsuario);
+    private Optional<List<Producto>> obtenerProductosPorVeterinario(@RequestParam Long veterinario) {
+        return productoService.obtenerProductosPorVeterinario(veterinario);
     }
 
     @PutMapping("/actualizar")
