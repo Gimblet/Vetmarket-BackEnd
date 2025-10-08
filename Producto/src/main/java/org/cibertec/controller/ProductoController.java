@@ -17,9 +17,9 @@ public class ProductoController {
     @Autowired
     private ProductoService productoService;
 
-    @PostMapping("/guardar")
-    private ResponseEntity<ProductoResponseDTO> guardarProducto(@RequestBody ProductoRequestDTO productoRequestDTO,
-                                                                @RequestParam MultipartFile imagen) {
+    @PostMapping(value = "/guardar", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    private ResponseEntity<ProductoResponseDTO> guardarProducto(@RequestPart ProductoRequestDTO productoRequestDTO,
+                                                                @RequestPart(required = false) MultipartFile imagen) {
         return productoService.guardar(productoRequestDTO, imagen);
     }
 

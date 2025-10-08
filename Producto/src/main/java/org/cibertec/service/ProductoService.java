@@ -33,10 +33,23 @@ public class ProductoService {
 //        TODO: Modify new Usuario when the actual Usuario entity is added
 //        Usuario usuario = UsuarioClient.getUsuarioByID(productoRequestDTO.getIdUsuario());
 
-        Producto productoEntidad = productoMapper.toEntity(productoRequestDTO, new Usuario());
+        Usuario usuario = new Usuario();
+
+        usuario.setIdUsuario(Long.parseLong("1"));
+        usuario.setNombre("nombre prueba9324524");
+        usuario.setApellido("apellido prueba");
+        usuario.setCorreo("correo_prubea@gmail.com");
+        usuario.setDireccion("123 calle manzana");
+        usuario.setTelefono("12345678");
+        usuario.setPassword("12345678");
+        usuario.setRuc("12345678");
+        usuario.setTelefono("99945678");
+        usuario.setUsername("vetfarma");
+
+        Producto productoEntidad = productoMapper.toEntity(productoRequestDTO, usuario);
 
         try {
-            if (imagen == null || !imagen.isEmpty())
+            if (imagen == null || imagen.isEmpty())
                 throw new IOException();
 //        productoEntidad.setUsuario(usuarioServiceClient.findById(productoRequestDTO.getIdUsuario()));
             productoEntidad.setImg(imagen.getBytes());
