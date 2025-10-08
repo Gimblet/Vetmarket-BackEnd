@@ -2,9 +2,9 @@ package org.cibertec.controller;
 
 import org.cibertec.dto.ProductoRequestDTO;
 import org.cibertec.dto.ProductoResponseDTO;
-import org.cibertec.entity.Producto;
 import org.cibertec.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,7 +44,8 @@ public class ProductoController {
     }
 
     @PutMapping("/actualizar")
-    private String actualizarProductoPorId(@RequestParam int id, @RequestBody Producto producto) {
+    private ResponseEntity<String> actualizarProductoPorId(@RequestParam int id,
+                                                           @RequestBody ProductoRequestDTO producto) {
         return productoService.actualizarProductoPorId(id, producto);
     }
 

@@ -78,14 +78,18 @@ public class ProductoService {
                 .toList())).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    public String actualizarProductoPorId(int id, Producto producto) {
-        if (productoRepository.existsById(id)) {
-            producto.setIdProducto(id);
-            productoRepository.save(producto);
-            return "Producto actualizado con exito";
-        } else {
-            throw new IllegalArgumentException("No existe el producto con el id: " + id);
-        }
+    public ResponseEntity<String> actualizarProductoPorId(int id, ProductoRequestDTO producto) {
+        // TODO: Implementar cuando Usuario se encuentre listo
+//        if (productoRepository.existsById(id)) {
+//            Usuario usuario = usuarioClient.getClientByID(producto.getIdUsuario());
+//            Producto productoEntidad = productoMapper.toEntity(producto, usuario);
+//            productoEntidad.setIdProducto(id);
+//            productoRepository.save(productoEntidad);
+//            return ResponseEntity.ok("Producto con ID : " + productoEntidad.getIdProducto() + "actualizado con exito");
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+        return ResponseEntity.ok("Falta Implementar");
     }
 
     public ResponseEntity<String> eliminarProductoPorId(int id) {
