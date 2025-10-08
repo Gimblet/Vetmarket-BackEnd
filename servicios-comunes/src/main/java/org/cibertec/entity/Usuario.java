@@ -1,5 +1,6 @@
 package org.cibertec.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -54,5 +55,10 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario")
     @JsonIgnore
     private List<Servicio> servicio;
+
+    // Relacionar con la tabla Mascota
+    /*@OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Mascota> mascotas = new ArrayList<>();*/
 }
 
