@@ -57,8 +57,8 @@ public class Usuario {
     private List<Servicio> servicio;
 
     // Relacionar con la tabla Mascota
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
+    /*@OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Mascota> mascotas = new ArrayList<>();
+    private List<Mascota> mascotas = new ArrayList<>();*/
 }
 

@@ -15,5 +15,6 @@ public class MascotaRequestDto {
     private Double peso;
     private String especie;
     private String raza;
-    private Long idUsuario;
+    // comentado temporalmente
+    // private Long idUsuario;
 }
