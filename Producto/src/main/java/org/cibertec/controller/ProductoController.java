@@ -1,9 +1,13 @@
 package org.cibertec.controller;
 
+import org.cibertec.dto.ProductoRequestDTO;
+import org.cibertec.dto.ProductoResponseDTO;
 import org.cibertec.entity.Producto;
 import org.cibertec.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,27 +19,28 @@ public class ProductoController {
     private ProductoService productoService;
 
     @PostMapping("/guardar")
-    private Producto guardarProducto(@RequestBody Producto producto) {
-        return productoService.guardar(producto);
+    private ResponseEntity<ProductoResponseDTO> guardarProducto(@RequestBody ProductoRequestDTO productoRequestDTO,
+                                                                @RequestParam MultipartFile imagen) {
+        return productoService.guardar(productoRequestDTO, imagen);
     }
 
     @GetMapping("/listar")
-    private List<Producto> obtenerProductos() {
+    private ResponseEntity<List<ProductoResponseDTO>> obtenerProductos() {
         return productoService.obtenerProductos();
     }
 
     @GetMapping(value = "/buscar", params = "id")
-    private Optional<Producto> obtenerProductoPorID(@RequestParam int id) {
+    private ResponseEntity<ProductoResponseDTO> obtenerProductoPorID(@RequestParam int id) {
         return productoService.buscarProductoPorID(id);
     }
 
     @GetMapping(value = "/buscar", params = "nombre")
-    private Optional<List<Producto>> obtenerProductoPorNombre(@RequestParam String nombre) {
+    private ResponseEntity<List<ProductoResponseDTO>> obtenerProductoPorNombre(@RequestParam String nombre) {
         return productoService.buscarProductoPorNombre(nombre);
     }
 
     @GetMapping(value = "/buscar", params = "veterinario")
-    private Optional<List<Producto>> obtenerProductosPorVeterinario(@RequestParam Long veterinario) {
+    private ResponseEntity<List<ProductoResponseDTO>> obtenerProductosPorVeterinario(@RequestParam Long veterinario) {
         return productoService.obtenerProductosPorVeterinario(veterinario);
     }
 
@@ -47,5 +52,10 @@ public class ProductoController {
     @DeleteMapping("/eliminar")
     private void eliminarProductoPorId(@RequestParam int id) {
         productoService.eliminarProductoPorId(id);
+    }
+
+    @GetMapping("/obtenerImagen/{id}")
+    public ResponseEntity<byte[]> obtenerImagen(@PathVariable int id) {
+        return productoService.obtenerImagen(id);
     }
 }
