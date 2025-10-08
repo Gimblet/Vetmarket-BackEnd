@@ -91,18 +91,26 @@ public class ProductoService {
                 .toList())).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    public ResponseEntity<String> actualizarProductoPorId(int id, ProductoRequestDTO producto) {
-        // TODO: Implementar cuando Usuario se encuentre listo
-//        if (productoRepository.existsById(id)) {
+    public ResponseEntity<String> actualizarProductoPorId(int id,
+                                                          ProductoRequestDTO producto,
+                                                          MultipartFile imagen) {
+//         TODO: Implementar cuando Usuario se encuentre listo
+//        if (!productoRepository.existsById(id)) {
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//        try {
 //            Usuario usuario = usuarioClient.getClientByID(producto.getIdUsuario());
 //            Producto productoEntidad = productoMapper.toEntity(producto, usuario);
 //            productoEntidad.setIdProducto(id);
+//            productoEntidad.setImg(imagen.getBytes());
 //            productoRepository.save(productoEntidad);
-//            return ResponseEntity.ok("Producto con ID : " + productoEntidad.getIdProducto() + "actualizado con exito");
-//        } else {
-//            return ResponseEntity.notFound().build();
+//        } catch (IOException e) {
+//            System.out.println("Hubo un error al actualizar el archivo de imagen: " + e.getMessage());
+//            throw new RuntimeException(e);
 //        }
-        return ResponseEntity.ok("Falta Implementar");
+//        return ResponseEntity.ok("Producto con ID : " + productoEntidad.getIdProducto() + "actualizado con exito");
+        return ResponseEntity.ok("FALTA IMPLEMENTAR EL SERVICIO DE ACTUALIZAR PRODUCTO POR ID");
     }
 
     public ResponseEntity<String> eliminarProductoPorId(int id) {

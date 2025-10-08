@@ -43,10 +43,11 @@ public class ProductoController {
         return productoService.obtenerProductosPorVeterinario(veterinario);
     }
 
-    @PutMapping("/actualizar")
+    @PutMapping(value = "/actualizar", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     private ResponseEntity<String> actualizarProductoPorId(@RequestParam int id,
-                                                           @RequestBody ProductoRequestDTO producto) {
-        return productoService.actualizarProductoPorId(id, producto);
+                                                           @RequestPart ProductoRequestDTO producto,
+                                                           @RequestPart MultipartFile imagen) {
+        return productoService.actualizarProductoPorId(id, producto, imagen);
     }
 
     @DeleteMapping("/eliminar")
