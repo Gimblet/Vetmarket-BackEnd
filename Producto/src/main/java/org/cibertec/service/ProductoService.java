@@ -88,11 +88,12 @@ public class ProductoService {
         }
     }
 
-    public void eliminarProductoPorId(int id) {
+    public ResponseEntity<String> eliminarProductoPorId(int id) {
         if (productoRepository.existsById(id)) {
             productoRepository.deleteById(id);
+            return ResponseEntity.ok("Producto eliminado con exito");
         } else {
-            throw new IllegalArgumentException("No existe el producto con el id: " + id);
+            return ResponseEntity.notFound().build();
         }
     }
 

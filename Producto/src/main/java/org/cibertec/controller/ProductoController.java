@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/producto")
@@ -50,8 +49,8 @@ public class ProductoController {
     }
 
     @DeleteMapping("/eliminar")
-    private void eliminarProductoPorId(@RequestParam int id) {
-        productoService.eliminarProductoPorId(id);
+    private ResponseEntity<String> eliminarProductoPorId(@RequestParam int id) {
+        return productoService.eliminarProductoPorId(id);
     }
 
     @GetMapping("/obtenerImagen/{id}")
