@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 public class ServicioRequestDTO {
 
     private double precio;
-    private String nombre, descripcion;
-    private byte[] img;
+    private String nombre;
+    private String descripcion;
 
     // comentado temporalmente
     // private Long idUsuario;

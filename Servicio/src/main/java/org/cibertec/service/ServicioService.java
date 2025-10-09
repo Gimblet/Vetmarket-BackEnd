@@ -8,7 +8,9 @@ import org.cibertec.entity.Servicio;
 import org.cibertec.mapper.ServicioMapper;
 import org.cibertec.repository.IServicioRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -30,24 +32,50 @@ public class ServicioService {
                     .orElseThrow(() -> new RuntimeException("No se encontro el servicio con id: " + id));
         }
 
+// Modif repas
+    public ServicioResponseDTO crearServicio(
+            String nombre,
+            String descripcion,
+            Double precio,
+           // Long usuarioId,
+            MultipartFile img) throws IOException {
 
-        public ServicioResponseDTO guardarServicio(ServicioRequestDTO requestDTO) {
-            Servicio servicio = servicioMapper.toEntity(requestDTO);
-            return servicioMapper.toDto(servicioRepository.save(servicio));
+        ServicioRequestDTO request = ServicioRequestDTO.builder()
+                .nombre(nombre)
+                .descripcion(descripcion)
+                .precio(precio)
+                .build();
+
+        byte[] imgBytes = img != null ? img.getBytes() : null;
+        Servicio servicio = servicioMapper.toEntity(request, imgBytes);
+        Servicio guardado = servicioRepository.save(servicio);
+        return servicioMapper.toDto(guardado);
+    }
+
+    // Modif repas
+    public ServicioResponseDTO actualizarServicio(
+            Integer id,
+            String nombre,
+            String descripcion,
+            Double precio,
+           // Long usuarioId,
+            MultipartFile img) throws IOException {
+
+        Servicio servicio = servicioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
+
+        // Actualizar solo los campos que no son null
+        if (nombre != null) servicio.setNombre(nombre);
+        if (descripcion != null) servicio.setDescripcion(descripcion);
+        if (precio != null) servicio.setPrecio(precio);
+        //if (usuarioId != null) servicio.setUsuarioId(usuarioId);
+        if (img != null && !img.isEmpty()) {
+            servicio.setImg(img.getBytes());
         }
 
-
-        public ServicioResponseDTO actualizarServicio(Integer id, ServicioRequestDTO requestDTO) {
-            Servicio servicio = servicioRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("No se encontro el servicio con id: " + id));
-
-            servicio.setPrecio(requestDTO.getPrecio());
-            servicio.setNombre(requestDTO.getNombre());
-            servicio.setDescripcion(requestDTO.getDescripcion());
-            servicio.setImg(requestDTO.getImg());
-            return servicioMapper.toDto(servicioRepository.save(servicio));
-
-        }
+        Servicio actualizado = servicioRepository.save(servicio);
+        return servicioMapper.toDto(actualizado);
+    }
 
 
         public void eliminarServicio(Integer id) {
@@ -55,6 +83,13 @@ public class ServicioService {
                 throw new RuntimeException("No se encontro el servicio con id: " + id);
             }
             servicioRepository.deleteById(id);
+        }
+
+    // Modif repas
+        public byte[] obtenerImagen(Integer id) {
+        return servicioRepository.findById(id)
+                .map(Servicio::getImg)
+                .orElse(null);
         }
     }
 
