@@ -15,7 +15,7 @@ public class ServicioResponseDTO {
     private Integer idServicio;
     private double precio;
     private String nombre, descripcion;
-    private byte[] imagen;
+    private byte[] img;
     // Usuario
     private Long idUsuario;
     private String nombreUsuario;

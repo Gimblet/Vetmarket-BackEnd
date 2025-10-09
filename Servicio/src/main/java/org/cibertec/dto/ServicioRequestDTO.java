@@ -13,7 +13,7 @@ public class ServicioRequestDTO {
 
     private double precio;
     private String nombre, descripcion;
-    private byte[] imagen;
+    private byte[] img;
 
     // comentado temporalmente
     // private Long idUsuario;
