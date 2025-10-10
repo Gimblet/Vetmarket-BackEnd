@@ -25,10 +25,10 @@ public class Mascota {
     private String raza;
 
     // comentado temporal
-    /*@ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false)
     @JsonIgnore
-    private Usuario usuario;*/
+    private Usuario usuario;
 }
 
 
