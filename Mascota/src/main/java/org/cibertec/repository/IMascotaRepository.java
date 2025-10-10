@@ -1,4 +1,4 @@
-package org.cibertec.domain.repository;
+package org.cibertec.repository;
 
 import org.cibertec.entity.Mascota;
 import org.springframework.data.jpa.repository.JpaRepository;
