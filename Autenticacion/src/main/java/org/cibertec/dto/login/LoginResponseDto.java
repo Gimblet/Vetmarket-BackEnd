@@ -3,7 +3,6 @@ package org.cibertec.dto.login;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
 
 @Data
 @Builder
