@@ -4,13 +4,14 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.cibertec.entity.Usuario;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -23,17 +24,18 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    public String generateToken(UserDetails user) {
-        String rol = user.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .findFirst()
-                .orElse("ROLE_CLIENTE"); // valor por defecto
+    // En JwtUtil.java
+    public String generateTokenWithUserInfo(Usuario usuario) {
+        Map<String, Object> claims = new HashMap<>();
 
-        Map<String, Object> claims = Map.of("rol", rol);
+        // Agregar los IDs que te pidieron
+        claims.put("idUsuario", usuario.getIdUsuario());
+        claims.put("idRol", usuario.getRol() != null ? usuario.getRol().getIdRol() : null);
+        claims.put("rol", usuario.getRol() != null ? "ROLE_" + usuario.getRol().getNombreRol() : "ROLE_ANONIMO");
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(user.getUsername())
+                .setSubject(usuario.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
