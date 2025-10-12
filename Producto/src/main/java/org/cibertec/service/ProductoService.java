@@ -99,18 +99,31 @@ public class ProductoService {
 //            return ResponseEntity.notFound().build();
 //        }
 //
-//        try {
-//            Usuario usuario = usuarioClient.getClientByID(producto.getIdUsuario());
-//            Producto productoEntidad = productoMapper.toEntity(producto, usuario);
-//            productoEntidad.setIdProducto(id);
-//            productoEntidad.setImg(imagen.getBytes());
-//            productoRepository.save(productoEntidad);
-//        } catch (IOException e) {
-//            System.out.println("Hubo un error al actualizar el archivo de imagen: " + e.getMessage());
-//            throw new RuntimeException(e);
-//        }
-//        return ResponseEntity.ok("Producto con ID : " + productoEntidad.getIdProducto() + "actualizado con exito");
-        return ResponseEntity.ok("FALTA IMPLEMENTAR EL SERVICIO DE ACTUALIZAR PRODUCTO POR ID");
+        try {
+            Usuario usuario = new Usuario();
+//            usuario.setIdUsuario(Long.parseLong("1"));
+//            usuario.setNombre("nombre prueba9324524");
+//            usuario.setApellido("apellido prueba");
+//            usuario.setCorreo("correo_prubea@gmail.com");
+//            usuario.setDireccion("123 calle manzana");
+//            usuario.setTelefono("12345678");
+//            usuario.setPassword("12345678");
+//            usuario.setRuc("12345678");
+//            usuario.setTelefono("99945678");
+//            usuario.setUsername("vetfarma");
+
+            Producto productoEntidad = productoMapper.toEntity(producto, usuario);
+            productoEntidad.setIdProducto(id);
+            if (imagen != null)
+                productoEntidad.setImg(imagen.getBytes());
+            productoRepository.save(productoEntidad);
+            return ResponseEntity.ok("Producto con ID : " + productoEntidad.getIdProducto() + "actualizado con exito");
+
+        } catch (IOException e) {
+            System.out.println("Hubo un error al actualizar el archivo de imagen: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+//        return ResponseEntity.ok("FALTA IMPLEMENTAR EL SERVICIO DE ACTUALIZAR PRODUCTO POR ID");
     }
 
     public ResponseEntity<String> eliminarProductoPorId(int id) {
