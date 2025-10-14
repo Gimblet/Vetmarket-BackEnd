@@ -3,6 +3,7 @@ package org.cibertec.entity;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,9 +25,6 @@ public class Orden {
 	@ManyToOne
 	private Usuario usuario;
 	
-	@OneToMany(mappedBy = "orden")
-	private List<DetalleOrdenCompra> detOrden;
-	
-	@OneToMany(mappedBy = "orden")
-	private List<DetalleServicio> detServicio;
+	@OneToMany(mappedBy = "orden", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<DetalleOrden> detalle;
 }

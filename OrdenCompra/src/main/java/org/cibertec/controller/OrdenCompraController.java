@@ -1,22 +1,26 @@
 package org.cibertec.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.cibertec.dto.DetalleVentaDTO;
-import org.cibertec.entity.DetalleOrdenCompra;
+import org.cibertec.entity.DetalleOrden;
+import org.cibertec.entity.DetalleProducto;
 import org.cibertec.entity.DetalleServicio;
 import org.cibertec.entity.Orden;
 import org.cibertec.entity.Usuario;
 import org.cibertec.service.DetalleOrdenService;
-import org.cibertec.service.DetalleServicioService;
 import org.cibertec.service.OrdenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,8 +35,6 @@ public class OrdenCompraController {
 	@Autowired
 	private DetalleOrdenService detOrdSer;
 	
-	@Autowired
-	private DetalleServicioService detServSer;
 	
 	//todas las ordenes para el administrador
 	@GetMapping("/ordenes")
@@ -67,10 +69,6 @@ public class OrdenCompraController {
 		Orden orden = ordenOpt.get();
 		
 	    List<?> detalle = detOrdSer.buscarPorOrd(orden);
-	    
-	    if (detalle.isEmpty()) {
-	        detalle = detServSer.buscarPorOrd(orden);
-	    }
 		
 		return ResponseEntity.ok(detalle);
 	}
@@ -83,46 +81,47 @@ public class OrdenCompraController {
         	throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Acceso denegado: El ID de Cliente no fue proporcionado en el encabezado.");
         }
         
-        List<DetalleOrdenCompra> detalleProd = detOrdSer.buscarPorUsuarioId(idUsuario);
-        List<DetalleServicio> detalleServ = detServSer.buscarPorUsuarioId(idUsuario);
+        List<DetalleProducto> detalleProd = detOrdSer.buscarProductoPorUsuarioId(idUsuario);
+        List<DetalleServicio> detalleServ = detOrdSer.buscarServicioPorUsuarioId(idUsuario);
+        
         
         List<DetalleVentaDTO> detallesCombinados= new ArrayList<>();
         
-        for(DetalleOrdenCompra detProd:detalleProd) {
-        	detallesCombinados.add(mapADto(detProd));
+        for(DetalleOrden detOrd:detalleProd) {
+        	detallesCombinados.add(mapADto(detOrd));
         }
-        for(DetalleServicio detServ:detalleServ) {
-        	detallesCombinados.add(mapADto(detServ));
+        for(DetalleOrden detOrd:detalleServ) {
+        	detallesCombinados.add(mapADto(detOrd));
         }
-        
         
         return ResponseEntity.ok(detallesCombinados);
         
 	}
 	
-	private DetalleVentaDTO mapADto(DetalleOrdenCompra detProd) {
-	    DetalleVentaDTO dto = new DetalleVentaDTO();
-	    dto.setDetalleId(detProd.getIdDetalleOrden());
-	    dto.setOrdenId(detProd.getOrden().getNumeroOrden()); 
-	    dto.setTipoItem("PRODUCTO");
-	    dto.setNombreItem(detProd.getNombreProducto());
-	    dto.setPrecio(detProd.getPrecio());
-	    dto.setCantidad(detProd.getCantidad());
-	    dto.setTotal(detProd.getTotal());
-	    dto.setFecha(detProd.getOrden().getFecha());
-	    return dto;
-	}
 	
-	private DetalleVentaDTO mapADto(DetalleServicio detServ) {
+	
+	
+	
+	private DetalleVentaDTO mapADto(DetalleOrden detOrd) {
 	    DetalleVentaDTO dto = new DetalleVentaDTO();
-	    dto.setDetalleId(detServ.getIdDetalleServicio());
-	    dto.setOrdenId(detServ.getOrden().getNumeroOrden());
-	    dto.setTipoItem("SERVICIO");
-	    dto.setNombreItem(detServ.getNombreServicio());
-	    dto.setPrecio(detServ.getPrecio());
-	    dto.setCantidad(1);
-	    dto.setTotal(detServ.getPrecio());
-	    dto.setFecha(detServ.getFechaCita());
+	    dto.setDetalleId(detOrd.getIdDetalle());
+	    dto.setOrdenId(detOrd.getOrden().getNumeroOrden());
+	    dto.setNombreItem(detOrd.getNombre());
+	    dto.setPrecio(detOrd.getPrecio());
+	    dto.setTotal(detOrd.getTotal());
+	    
+	    if(detOrd instanceof DetalleProducto) {
+	    	DetalleProducto detProd= (DetalleProducto) detOrd;
+	    	dto.setTipoItem("Producto");
+	    	dto.setCantidad(detProd.getCantidad());
+	    	dto.setFecha(null);
+	    } 
+	    if (detOrd instanceof DetalleServicio) {
+	        DetalleServicio detServ = (DetalleServicio) detOrd;
+	        dto.setTipoItem("Servicio");
+	        dto.setCantidad(1);
+	        dto.setFecha(detServ.getFechaCita());
+	    }
 	    return dto;
 	}
 }
