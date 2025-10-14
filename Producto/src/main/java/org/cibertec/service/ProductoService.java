@@ -126,6 +126,17 @@ public class ProductoService {
 //        return ResponseEntity.ok("FALTA IMPLEMENTAR EL SERVICIO DE ACTUALIZAR PRODUCTO POR ID");
     }
 
+    public ResponseEntity<String> actualizarStockProducto(int idProducto,
+                                                          int stock) {
+        Producto producto = productoRepository.findById(idProducto).get();
+        producto.setStock(stock);
+        productoRepository.save(producto);
+        return ResponseEntity.ok(
+                "Stock del Producto con ID : " +
+                producto.getIdProducto() +
+                " actualizado con exito");
+    }
+
     public ResponseEntity<String> eliminarProductoPorId(int id) {
         if (productoRepository.existsById(id)) {
             productoRepository.deleteById(id);
