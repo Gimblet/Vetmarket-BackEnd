@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 public interface DetalleOrdenRepository extends JpaRepository<DetalleOrden, Integer>{
 	List<DetalleOrden> findByOrden(Orden orden);
 
-	@Query("SELECT d FROM DetalleOrdenCompra d WHERE d.producto.usuario.idUsuario = :idUsuario")
+	@Query("SELECT d FROM DetalleProducto d WHERE d.producto.usuario.idUsuario = :idUsuario")
     List<DetalleProducto> findDetallesProductosByUsuarioId(@Param("idUsuario") Long idUsuario);
 	
 	@Query("SELECT d FROM DetalleServicio d WHERE d.servicio.usuario.idUsuario = :idUsuario")
