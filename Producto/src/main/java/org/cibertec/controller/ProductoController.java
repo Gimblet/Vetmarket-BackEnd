@@ -50,10 +50,10 @@ public class ProductoController {
         return productoService.actualizarProductoPorId(id, producto, imagen);
     }
 
-    @PutMapping(value = "/actualizar/stock")
-    private ResponseEntity<String> actualizarProductoStockPorId(@RequestParam int id,
-                                                                @RequestParam int stock) {
-        return productoService.actualizarStockProducto(id, stock);
+    @PutMapping(value = "/actualizar/restarStock")
+    private ResponseEntity<String> restarStockProductoPorID(@RequestParam int id,
+                                                            @RequestParam int stock) {
+        return productoService.restarStockProducto(id, stock);
     }
 
 

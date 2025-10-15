@@ -126,10 +126,13 @@ public class ProductoService {
 //        return ResponseEntity.ok("FALTA IMPLEMENTAR EL SERVICIO DE ACTUALIZAR PRODUCTO POR ID");
     }
 
-    public ResponseEntity<String> actualizarStockProducto(int idProducto,
-                                                          int stock) {
+    public ResponseEntity<String> restarStockProducto(int idProducto,
+                                                      int stock) {
         Producto producto = productoRepository.findById(idProducto).get();
-        producto.setStock(stock);
+        producto.setStock(producto.getStock() - stock);
+        if(producto.getStock() < 0){
+            return ResponseEntity.badRequest().body("No hay suficiente stock del producto");
+        }
         productoRepository.save(producto);
         return ResponseEntity.ok(
                 "Stock del Producto con ID : " +
