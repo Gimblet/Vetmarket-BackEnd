@@ -9,6 +9,7 @@ spring:
         git:
           uri: https://github.com/Gimblet/DAW2-config
           force-pull: true
+          default-label: main
       label: main
 server:
   port: 8888
