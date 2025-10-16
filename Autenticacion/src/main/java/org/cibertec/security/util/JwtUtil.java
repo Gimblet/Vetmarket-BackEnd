@@ -31,7 +31,7 @@ public class JwtUtil {
         // Agregar los IDs que te pidieron
         claims.put("idUsuario", usuario.getIdUsuario());
         claims.put("idRol", usuario.getRol() != null ? usuario.getRol().getIdRol() : null);
-        claims.put("rol", usuario.getRol() != null ? "ROLE_" + usuario.getRol().getNombreRol() : "ROLE_ANONIMO");
+        claims.put("rol", usuario.getRol() != null ? usuario.getRol().getNombreRol() : "ROLE_ANONIMO");
 
         return Jwts.builder()
                 .setClaims(claims)

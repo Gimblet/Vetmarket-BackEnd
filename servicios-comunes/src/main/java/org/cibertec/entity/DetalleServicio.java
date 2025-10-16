@@ -15,4 +15,7 @@ public class DetalleServicio extends DetalleOrden {
 
 	@ManyToOne
 	private Servicio servicio;
+	
+	@ManyToOne
+	private Mascota mascota;
 }

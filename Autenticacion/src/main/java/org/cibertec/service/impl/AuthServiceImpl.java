@@ -1,8 +1,9 @@
 package org.cibertec.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.cibertec.dto.login.LoginRequestDto;
-import org.cibertec.dto.login.LoginResponseDto;
+
+import org.cibertec.dto.LoginRequestDto;
+import org.cibertec.dto.LoginResponseDto;
 import org.cibertec.entity.Usuario;
 import org.cibertec.repository.IUsuarioRepository;
 import org.cibertec.security.util.JwtUtil;
@@ -35,7 +36,7 @@ public class AuthServiceImpl implements IAuthService {
         return LoginResponseDto.builder()
                 .token(token)
                 .username(usuario.getUsername())
-                .rol(usuario.getRol() != null ? "ROLE_" + usuario.getRol().getNombreRol() : "ROLE_ANONIMO")
+                .rol(usuario.getRol() != null ? usuario.getRol().getNombreRol() : "ROLE_ANONIMO")
                 .usuarioId(usuario.getIdUsuario())
                 .expirateAt(expiration)
                 .build();

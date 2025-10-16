@@ -1,8 +1,9 @@
 package org.cibertec.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.cibertec.dto.login.LoginRequestDto;
-import org.cibertec.dto.login.LoginResponseDto;
+
+import org.cibertec.dto.LoginRequestDto;
+import org.cibertec.dto.LoginResponseDto;
 import org.cibertec.service.IAuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

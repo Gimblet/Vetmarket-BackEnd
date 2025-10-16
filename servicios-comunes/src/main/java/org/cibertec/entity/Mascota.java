@@ -1,5 +1,7 @@
 package org.cibertec.entity;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,6 +31,11 @@ public class Mascota {
     @JoinColumn(name = "usuario_id", nullable = false)
     @JsonIgnore
     private Usuario usuario;
+    
+    //Relacionar con la tabla DetalleServicio
+    @OneToMany(mappedBy = "mascota")
+    @JsonIgnore
+    private List<DetalleServicio> detalleServ;
 }
 
 

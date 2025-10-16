@@ -20,7 +20,7 @@ public class Orden {
 	private Integer numeroOrden;
 	
 	private Date fecha;
-	private double total, comision;//comision del 15%
+	private double total, comisionTotal;//comision del 15%
 	
 	@ManyToOne
 	private Usuario usuario;

@@ -12,11 +12,11 @@ public class DetalleDto {
     private double total;
     
     private Integer cantidad;
-    private Long idProducto;
+    private Integer idProducto;
     
     private Date fechaCita;
-    private Long idServicio;
+    private Integer idServicio;
+    private Long idMascota;
     
-    private Integer ordenId; 
-
+    private Long idUsuario;
 }

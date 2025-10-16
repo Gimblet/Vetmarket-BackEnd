@@ -1,4 +1,4 @@
-package org.cibertec.dto.login;
+package org.cibertec.dto;
 
 import lombok.Builder;
 import lombok.Data;

@@ -21,7 +21,7 @@ public class DetalleOrden {
     private Integer idDetalle;
 	
 	private String nombre;
-	private double precio,total;
+	private double precio,total,comision;
 	
 	@ManyToOne
     private Orden orden;

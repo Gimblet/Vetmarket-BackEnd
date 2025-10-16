@@ -29,5 +29,9 @@ public class OrdenService {
 	public Optional<Orden> buscarPorId(int id){
 		return ordRep.findById(id);
 	}
+	
+	public void eliminar(Integer id) {
+		ordRep.deleteById(id);
+	}
 
 }
