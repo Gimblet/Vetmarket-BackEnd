@@ -14,9 +14,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-
+import lombok.NoArgsConstructor;
+@Builder
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class Usuario {
     @Id
@@ -39,6 +44,7 @@ public class Usuario {
     private String password;
 
     @ManyToOne
+    @JoinColumn(name = "id_rol")
     private Rol rol;
     
     //Relacionar con la tabla Producto
