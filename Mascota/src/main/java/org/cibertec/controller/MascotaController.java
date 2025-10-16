@@ -43,6 +43,12 @@ public class MascotaController {
         return ResponseEntity.ok(mascota);
     }
 
+    @GetMapping("/usuario/{idUsuario}")
+    public ResponseEntity<List<Mascota>> listarMascotasPorUsuario(@PathVariable Long idUsuario) {
+        List<Mascota> mascotas = mascotaService.listarMascotasPorUsuario(idUsuario);
+        return ResponseEntity.ok(mascotas);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarMascota(@PathVariable Long id) {
         mascotaService.eliminarMascota(id);

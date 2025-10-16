@@ -58,6 +58,13 @@ public class MascotaService {
         return mascotaRepository.save(mascotaExistente);
     }
 
+    public List<Mascota> listarMascotasPorUsuario(Long idUsuario) {
+        if(!usuarioRepository.existsById(idUsuario)) {
+            throw new RuntimeException("Usuario no encontrado con id: " + idUsuario);
+        }
+        return mascotaRepository.findByUsuarioIdUsuario(idUsuario);
+    }
+
     public void eliminarMascota(Long id) {
         if (mascotaRepository.existsById(id)) {
             mascotaRepository.deleteById(id);
