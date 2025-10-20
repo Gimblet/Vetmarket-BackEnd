@@ -7,6 +7,7 @@ import org.cibertec.entity.Producto;
 import org.cibertec.entity.Usuario;
 import org.cibertec.mapper.ProductoMapper;
 import org.cibertec.repository.IProductoRepository;
+import org.cibertec.repository.IUsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,33 +20,24 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ProductoService {
-    @Autowired
     private IProductoRepository productoRepository;
+    private IUsuarioRepository usuarioRepository;
 
     private final ProductoMapper productoMapper;
 
+    @Autowired
+    public ProductoService(IProductoRepository productoRepository, IUsuarioRepository usuarioRepository, ProductoMapper productoMapper) {
+        this.productoRepository = productoRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.productoMapper = productoMapper;
+    }
+
     public ResponseEntity<ProductoResponseDTO> guardar(ProductoRequestDTO productoRequestDTO, MultipartFile imagen) {
-//       TODO: Complete when usuario entity is pushed
-//        if (!usuarioServiceClient.existsById) {
-//            return ResponseEntity.notFound().build();
-//        }
+        if (!usuarioRepository.existsById(productoRequestDTO.getIdUsuario())) {
+            return ResponseEntity.notFound().build();
+        }
 
-//        TODO: Modify new Usuario when the actual Usuario entity is added
-//        Usuario usuario = UsuarioClient.getUsuarioByID(productoRequestDTO.getIdUsuario());
-
-        Usuario usuario = new Usuario();
-
-        usuario.setIdUsuario(Long.parseLong("1"));
-        usuario.setNombre("nombre prueba9324524");
-        usuario.setApellido("apellido prueba");
-        usuario.setCorreo("correo_prubea@gmail.com");
-        usuario.setDireccion("123 calle manzana");
-        usuario.setTelefono("12345678");
-        usuario.setPassword("12345678");
-        usuario.setRuc("12345678");
-        usuario.setTelefono("99945678");
-        usuario.setUsername("vetfarma");
-
+        Usuario usuario = usuarioRepository.findById(productoRequestDTO.getIdUsuario()).get();
         Producto productoEntidad = productoMapper.toEntity(productoRequestDTO, usuario);
 
         try {
@@ -54,9 +46,8 @@ public class ProductoService {
             else {
                 productoEntidad.setImg(imagen.getBytes());
             }
-//                throw new IOException();
-//        productoEntidad.setUsuario(usuarioServiceClient.findById(productoRequestDTO.getIdUsuario()));
             productoRepository.save(productoEntidad);
+
         } catch (IOException e) {
             System.out.println("Hubo un error al obtener el archivo de imagen: " + e.getMessage());
             throw new RuntimeException(e);
@@ -97,28 +88,18 @@ public class ProductoService {
     public ResponseEntity<String> actualizarProductoPorId(int id,
                                                           ProductoRequestDTO producto,
                                                           MultipartFile imagen) {
-//         TODO: Implementar cuando Usuario se encuentre listo
-//        if (!productoRepository.existsById(id)) {
-//            return ResponseEntity.notFound().build();
-//        }
-//
-        try {
-            Usuario usuario = new Usuario();
-//            usuario.setIdUsuario(Long.parseLong("1"));
-//            usuario.setNombre("nombre prueba9324524");
-//            usuario.setApellido("apellido prueba");
-//            usuario.setCorreo("correo_prubea@gmail.com");
-//            usuario.setDireccion("123 calle manzana");
-//            usuario.setTelefono("12345678");
-//            usuario.setPassword("12345678");
-//            usuario.setRuc("12345678");
-//            usuario.setTelefono("99945678");
-//            usuario.setUsername("vetfarma");
+        if (!productoRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
 
+        try {
+            Usuario usuario = usuarioRepository.findById(producto.getIdUsuario()).get();
             Producto productoEntidad = productoMapper.toEntity(producto, usuario);
             productoEntidad.setIdProducto(id);
+
             if (imagen != null)
                 productoEntidad.setImg(imagen.getBytes());
+
             productoRepository.save(productoEntidad);
             return ResponseEntity.ok("Producto con ID : " + productoEntidad.getIdProducto() + "actualizado con exito");
 
@@ -126,21 +107,20 @@ public class ProductoService {
             System.out.println("Hubo un error al actualizar el archivo de imagen: " + e.getMessage());
             throw new RuntimeException(e);
         }
-//        return ResponseEntity.ok("FALTA IMPLEMENTAR EL SERVICIO DE ACTUALIZAR PRODUCTO POR ID");
     }
 
     public ResponseEntity<String> restarStockProducto(int idProducto,
                                                       int stock) {
         Producto producto = productoRepository.findById(idProducto).get();
         producto.setStock(producto.getStock() - stock);
-        if(producto.getStock() < 0){
+        if (producto.getStock() < 0) {
             return ResponseEntity.badRequest().body("No hay suficiente stock del producto");
         }
         productoRepository.save(producto);
         return ResponseEntity.ok(
                 "Stock del Producto con ID : " +
-                producto.getIdProducto() +
-                " actualizado con exito");
+                        producto.getIdProducto() +
+                        " actualizado con exito");
     }
 
     public ResponseEntity<String> eliminarProductoPorId(int id) {
