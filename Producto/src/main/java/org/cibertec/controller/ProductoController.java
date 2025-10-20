@@ -56,7 +56,6 @@ public class ProductoController {
         return productoService.restarStockProducto(id, stock);
     }
 
-
     @DeleteMapping("/eliminar")
     private ResponseEntity<String> eliminarProductoPorId(@RequestParam int id) {
         return productoService.eliminarProductoPorId(id);

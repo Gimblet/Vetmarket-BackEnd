@@ -50,9 +50,12 @@ public class ProductoService {
 
         try {
             if (imagen == null || imagen.isEmpty())
-                throw new IOException();
+                productoEntidad.setImg(null);
+            else {
+                productoEntidad.setImg(imagen.getBytes());
+            }
+//                throw new IOException();
 //        productoEntidad.setUsuario(usuarioServiceClient.findById(productoRequestDTO.getIdUsuario()));
-            productoEntidad.setImg(imagen.getBytes());
             productoRepository.save(productoEntidad);
         } catch (IOException e) {
             System.out.println("Hubo un error al obtener el archivo de imagen: " + e.getMessage());
