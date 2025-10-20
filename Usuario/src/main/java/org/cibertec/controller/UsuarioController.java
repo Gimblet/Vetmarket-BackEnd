@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -136,8 +137,8 @@ public class UsuarioController {
 
     
     // BUSCAR USUARIOS POR ROL
-    @GetMapping("/rol/{idRol}")
-    public ResponseEntity<List<Usuario>> buscarUsuariosPorRol(@PathVariable Long idRol) {
+    @GetMapping("/rol")
+    public ResponseEntity<List<Usuario>> buscarUsuariosPorRol(@RequestParam Long idRol) {
         Rol rol=new Rol();
         rol.setIdRol(idRol);
     	List<Usuario> usuarios = usuarioService.buscarPorRol(rol);
