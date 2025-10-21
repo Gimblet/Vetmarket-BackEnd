@@ -8,7 +8,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Entity
-@DiscriminatorValue("Servicio")
+@DiscriminatorValue("SERVICIO")
 @Data
 public class DetalleServicio extends DetalleOrden {
 	private Date fechaCita;

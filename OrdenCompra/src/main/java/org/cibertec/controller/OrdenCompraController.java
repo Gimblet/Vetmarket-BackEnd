@@ -21,7 +21,6 @@ import org.cibertec.service.OrdenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,11 +29,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/ordenCompra")
-@CrossOrigin(origins = "*")
 public class OrdenCompraController {
 	@Autowired
 	private OrdenService oSer;
@@ -49,6 +46,9 @@ public class OrdenCompraController {
 	//todas las ordenes para el administrador
 	@GetMapping("/ordenes")
 	public ResponseEntity<List<Orden>> listarOrdenes(@RequestHeader(name = "Authorization", required = false) String token){
+		if (token == null || token.isEmpty() || !token.startsWith("Bearer ")) {
+	        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	    }
 		List<Orden> ordenes =oSer.listaOrden();
 		return ResponseEntity.ok(ordenes);
 	}
@@ -57,10 +57,12 @@ public class OrdenCompraController {
 	@GetMapping("/ordenesClientes")
 	public ResponseEntity<List<Orden>> ListarOrdenPorUsuario(@RequestHeader(name = "Authorization", required = false) String token,
 			@RequestParam Long idUsuario){
-		//si el gateway garantiza el envio se elimina la validacion if
-        if (idUsuario == null) {
-        	throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Acceso denegado: El ID de Cliente no fue proporcionado en el encabezado.");
-        }
+		if (token == null || token.isEmpty() || !token.startsWith("Bearer ")) {
+	        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	    }
+		if (Objects.isNull(idUsuario)) {
+	        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	    }
         
         Usuario usuario=new Usuario();
         usuario.setIdUsuario(idUsuario);
@@ -72,6 +74,9 @@ public class OrdenCompraController {
 	@GetMapping("/detalleOrden/{idOrden}")
 	public ResponseEntity<?> listarDetalleOrden(@RequestHeader(name = "Authorization", required = false) String token,
 			@PathVariable int idOrden){
+		if (token == null || token.isEmpty() || !token.startsWith("Bearer ")) {
+	        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	    }
 		Optional<Orden> ordenOpt = oSer.buscarPorId(idOrden);
 		
 		if (!ordenOpt.isPresent()) {
@@ -89,10 +94,12 @@ public class OrdenCompraController {
 	@GetMapping("/listaVentas")
 	public ResponseEntity<List<DetalleVentaDTO>> ListarVentasVeterinarios(@RequestHeader(name = "Authorization", required = false) String token,
 			@RequestParam Long idUsuario){
-		//si el gateway garantiza el envio se elimina la validacion if
-        if (idUsuario == null) {
-        	throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Acceso denegado: El ID de Cliente no fue proporcionado en el encabezado.");
-        }
+		if (token == null || token.isEmpty() || !token.startsWith("Bearer ")) {
+	        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	    }
+		if (Objects.isNull(idUsuario)) {
+	        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	    }
         
         List<DetalleProducto> detalleProd = detOrdSer.buscarProductoPorUsuarioId(idUsuario);
         List<DetalleServicio> detalleServ = detOrdSer.buscarServicioPorUsuarioId(idUsuario);
@@ -206,6 +213,7 @@ public class OrdenCompraController {
 	    dto.setNombreItem(detOrd.getNombre());
 	    dto.setPrecio(detOrd.getPrecio());
 	    dto.setTotal(detOrd.getTotal());
+	    dto.setIdUsuairo(detOrd.getOrden().getUsuario().getIdUsuario());
 	    
 	    if(detOrd instanceof DetalleProducto) {
 	    	DetalleProducto detProd= (DetalleProducto) detOrd;
@@ -218,6 +226,7 @@ public class OrdenCompraController {
 	        dto.setTipoItem("Servicio");
 	        dto.setCantidad(1);
 	        dto.setFecha(detServ.getFechaCita());
+	        dto.setIdMascota(detServ.getMascota().getIdMascota());
 	    }
 	    return dto;
 	}
