@@ -6,7 +6,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Entity
-@DiscriminatorValue("Producto")
+@DiscriminatorValue("PRODUCTO")
 @Data
 public class DetalleProducto extends DetalleOrden{
 	private int cantidad;
