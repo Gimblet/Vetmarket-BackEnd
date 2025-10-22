@@ -94,11 +94,16 @@ public class ProductoService {
 
         try {
             Usuario usuario = usuarioRepository.findById(producto.getIdUsuario()).get();
+            Producto productoHelper = productoRepository.findById(id).get();
+
             Producto productoEntidad = productoMapper.toEntity(producto, usuario);
             productoEntidad.setIdProducto(id);
 
             if (imagen != null)
                 productoEntidad.setImg(imagen.getBytes());
+            else {
+                productoEntidad.setImg(productoHelper.getImg());
+            }
 
             productoRepository.save(productoEntidad);
             return ResponseEntity.ok("Producto con ID : " + productoEntidad.getIdProducto() + "actualizado con exito");
