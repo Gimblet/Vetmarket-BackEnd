@@ -33,4 +33,16 @@ public class ProductoMapper {
                 .usuario(usuario)
                 .build();
     }
+
+    public Producto toEntitySaved(ProductoRequestDTO productoRequestDTO) {
+        Usuario usuario = new Usuario();
+        usuario.setIdUsuario(productoRequestDTO.getIdUsuario());
+        return Producto.builder()
+                .nombre(productoRequestDTO.getNombre())
+                .stock(productoRequestDTO.getStock())
+                .precio(productoRequestDTO.getPrecio())
+                .descripcion(productoRequestDTO.getDescripcion())
+                .usuario(usuario)
+                .build();
+    }
 }

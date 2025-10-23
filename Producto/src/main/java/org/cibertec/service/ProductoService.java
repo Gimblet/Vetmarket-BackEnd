@@ -37,8 +37,7 @@ public class ProductoService {
             return ResponseEntity.notFound().build();
         }
 
-        Usuario usuario = usuarioRepository.findById(productoRequestDTO.getIdUsuario()).get();
-        Producto productoEntidad = productoMapper.toEntity(productoRequestDTO, usuario);
+        Producto productoEntidad = productoMapper.toEntitySaved(productoRequestDTO);
 
         try {
             if (imagen == null || imagen.isEmpty())
@@ -93,10 +92,9 @@ public class ProductoService {
         }
 
         try {
-            Usuario usuario = usuarioRepository.findById(producto.getIdUsuario()).get();
             Producto productoHelper = productoRepository.findById(id).get();
 
-            Producto productoEntidad = productoMapper.toEntity(producto, usuario);
+            Producto productoEntidad = productoMapper.toEntitySaved(producto);
             productoEntidad.setIdProducto(id);
 
             if (imagen != null)
