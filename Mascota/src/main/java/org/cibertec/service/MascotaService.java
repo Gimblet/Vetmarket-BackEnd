@@ -45,15 +45,11 @@ public class MascotaService {
         Mascota mascotaExistente = mascotaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Mascota no encontrada con id: " + id));
 
-        Usuario usuario = usuarioRepository.findById(requestDto.getIdUsuario())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + requestDto.getIdUsuario()));
-
         mascotaExistente.setNombre(requestDto.getNombre());
         mascotaExistente.setEdad(requestDto.getEdad());
         mascotaExistente.setPeso(requestDto.getPeso());
         mascotaExistente.setEspecie(requestDto.getEspecie());
         mascotaExistente.setRaza(requestDto.getRaza());
-        mascotaExistente.setUsuario(usuario);
 
         return mascotaRepository.save(mascotaExistente);
     }
