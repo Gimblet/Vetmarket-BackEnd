@@ -24,12 +24,17 @@ public class ProductoService {
     private IUsuarioRepository usuarioRepository;
 
     private final ProductoMapper productoMapper;
+    private final KafkaPublisherService kafkaPublisherService;
 
     @Autowired
-    public ProductoService(IProductoRepository productoRepository, IUsuarioRepository usuarioRepository, ProductoMapper productoMapper) {
+    public ProductoService(IProductoRepository productoRepository,
+                           IUsuarioRepository usuarioRepository,
+                           ProductoMapper productoMapper,
+                           KafkaPublisherService kafkaPublisherService) {
         this.productoRepository = productoRepository;
         this.usuarioRepository = usuarioRepository;
         this.productoMapper = productoMapper;
+        this.kafkaPublisherService = kafkaPublisherService;
     }
 
     public ResponseEntity<ProductoResponseDTO> guardar(ProductoRequestDTO productoRequestDTO, MultipartFile imagen) {
@@ -45,6 +50,7 @@ public class ProductoService {
             else {
                 productoEntidad.setImg(imagen.getBytes());
             }
+            kafkaPublisherService.send(productoRequestDTO);
             productoRepository.save(productoEntidad);
 
         } catch (IOException e) {
