@@ -62,10 +62,7 @@ public class ServicioService {
             String nombre,
             String descripcion,
             Double precio,
-            Long usuarioId,
             MultipartFile img) throws IOException {
-        Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("No se encontro el usuario con id: " + usuarioId));
 
         Servicio servicio = servicioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
@@ -74,7 +71,6 @@ public class ServicioService {
         if (nombre != null) servicio.setNombre(nombre);
         if (descripcion != null) servicio.setDescripcion(descripcion);
         if (precio != null) servicio.setPrecio(precio);
-        if (usuarioId != null) servicio.setUsuario(usuario);
         if (img != null && !img.isEmpty()) {
             servicio.setImg(img.getBytes());
         }
@@ -96,5 +92,11 @@ public class ServicioService {
                 .map(Servicio::getImg)
                 .orElse(null);
         }
+
+    public List<ServicioResponseDTO> listarServiciosPorVeterinario(Long usuarioId) {
+        return servicioRepository.findByUsuarioIdUsuario(usuarioId).stream()
+                .map(servicioMapper::toDto)
+                .toList();
+    }
     }
 
