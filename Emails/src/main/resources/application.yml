@@ -1,5 +1,5 @@
 spring:
   application:
-    name: Usuario
+    name: Emails
   config:
     import: configserver:http://localhost:8888
