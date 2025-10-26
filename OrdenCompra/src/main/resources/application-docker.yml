@@ -5,4 +5,4 @@ spring:
     import: configserver:http://localhost:8888
 
 server:
-  port: 5000
+  port: 6000
