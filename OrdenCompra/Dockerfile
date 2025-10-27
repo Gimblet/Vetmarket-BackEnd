@@ -20,6 +20,10 @@ FROM eclipse-temurin:17-jre
 WORKDIR /app
 # Carpeta de trabajo donde irá el .jar
 
+ENV SPRING_PROFILES_ACTIVE=docker
+ENV SPRING_CONFIG_LOCATION=classpath:/application-docker.yml
+#Especificar cual perfil leer
+
 COPY --from=builder /workspace/OrdenCompra/target/*.jar OrdenCompra.jar
 # Copiamos el .jar generado
 
