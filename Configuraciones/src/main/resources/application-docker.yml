@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: Configuraciones
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/Gimblet/DAW2-config
+          force-pull: true
+          default-label: docker
+      label: docker
+server:
+  port: 8888
