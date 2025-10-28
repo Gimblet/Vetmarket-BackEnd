@@ -1,6 +1,7 @@
 package org.cibertec.service;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import org.cibertec.dto.MascotaRequestDto;
 import org.cibertec.entity.Mascota;
@@ -19,16 +20,19 @@ public class MascotaService {
     private final IUsuarioRepository usuarioRepository;
 
     @CircuitBreaker(name = "mascotaService", fallbackMethod = "fallbackListarMascotas")
+    @Retry(name = "mascotaService")
     public List<Mascota> listarMascotas() {
         return mascotaRepository.findAll();
     }
 
     @CircuitBreaker(name = "mascotaService", fallbackMethod = "fallbackBuscarMascotaPotId")
+    @Retry(name = "mascotaService")
     public Optional<Mascota> buscarMascotaPorId(Long id) {
         return mascotaRepository.findById(id);
     }
 
     @CircuitBreaker(name = "mascotaService", fallbackMethod = "fallbackCrearMascota")
+    @Retry(name = "mascotaService")
     public Mascota crearMascota(MascotaRequestDto requestDto) {
         Usuario usuario = usuarioRepository.findById(requestDto.getIdUsuario())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + requestDto.getIdUsuario()));
@@ -46,6 +50,7 @@ public class MascotaService {
     }
 
     @CircuitBreaker(name = "mascotaService", fallbackMethod = "fallbackActualizarMascotas")
+    @Retry(name = "mascotaService")
     public Mascota actualizarMascota(Long id, MascotaRequestDto requestDto) {
         Mascota mascotaExistente = mascotaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Mascota no encontrada con id: " + id));
@@ -60,6 +65,7 @@ public class MascotaService {
     }
 
     @CircuitBreaker(name = "mascotaService", fallbackMethod = "fallbackListarMascotasPorUsuario")
+    @Retry(name = "mascotaService")
     public List<Mascota> listarMascotasPorUsuario(Long idUsuario) {
         if(!usuarioRepository.existsById(idUsuario)) {
             throw new RuntimeException("Usuario no encontrado con id: " + idUsuario);
@@ -68,6 +74,7 @@ public class MascotaService {
     }
 
     @CircuitBreaker(name = "mascotaService", fallbackMethod = "fallbackEliminarMascota")
+    @Retry(name = "mascotaService")
     public void eliminarMascota(Long id) {
         if (mascotaRepository.existsById(id)) {
             mascotaRepository.deleteById(id);
