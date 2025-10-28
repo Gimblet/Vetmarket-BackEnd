@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "Servicio", url="http://localhost:8080/servicio")
+@FeignClient(name = "Servicio", url="${gateway.url}/servicio")
 public interface ServicioClient {
     @GetMapping("/servicios/{id}")
     ResponseEntity<ServicioResponseDTO> buscarServicioPorId(@PathVariable Integer id);

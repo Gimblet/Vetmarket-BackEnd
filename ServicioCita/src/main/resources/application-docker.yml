@@ -1,11 +1,11 @@
 spring:
   application:
-    name: OrdenCompra
+    name: ServicioCita
   config:
     import: configserver:http://config-server:8888
 
 server:
-  port: 6000
+  port: 6002
 
 gateway:
   url: http://apigateway:8080
