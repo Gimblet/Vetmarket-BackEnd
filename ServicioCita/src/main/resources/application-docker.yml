@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: ServicioCita
+  config:
+    import: configserver:http://config-server:8888
+
+server:
+  port: 6002
+
+gateway:
+  url: http://apigateway:8080

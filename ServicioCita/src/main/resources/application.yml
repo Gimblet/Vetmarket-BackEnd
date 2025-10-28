@@ -3,3 +3,7 @@ spring:
     name: ServicioCita
   config:
     import: configserver:http://localhost:8888
+
+
+gateway:
+  url: http://localhost:8080
