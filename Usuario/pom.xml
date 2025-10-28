@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>org.cibertec</groupId>
-	<artifactId>usuario-server</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>usuario</name>
+	<artifactId>Usuario</artifactId>
+	<version>1.0.0</version>
+	<name>Usuario</name>
 	<description>Microservicio de gestion de usuarios</description>
 	
 	
