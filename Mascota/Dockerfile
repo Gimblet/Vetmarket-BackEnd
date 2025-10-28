@@ -20,6 +20,10 @@ FROM eclipse-temurin:17-jre
 # - carpeta de trabajo
 WORKDIR /app
 
+# - Especificar el perfil
+ENV SPRING_PROFILES_ACTIVE=docker
+ENV SPRING_CONFIG_LOCATION=classpath:/application-docker.yml
+
 # - copiar el .jar generado
 COPY --from=builder /workspace/Mascota/target/*.jar Mascota.jar
 
