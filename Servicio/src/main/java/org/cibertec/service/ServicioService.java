@@ -20,7 +20,7 @@ public class ServicioService {
     private final IServicioRepository servicioRepository;
     private final ServicioMapper servicioMapper;
     private final IUsuarioRepository usuarioRepository;
-
+private final KafkaPublisherService kafkaPublisherService;
 
     public List<ServicioResponseDTO> listarServicio() {
         return servicioRepository.findAll().stream()
@@ -48,11 +48,13 @@ public class ServicioService {
                 .nombre(nombre)
                 .descripcion(descripcion)
                 .precio(precio)
+                .idUsuario(usuarioId)
                 .build();
 
         byte[] imgBytes = img != null ? img.getBytes() : null;
         Servicio servicio = servicioMapper.toEntity(request,imgBytes ,usuario);
         Servicio guardado = servicioRepository.save(servicio);
+        kafkaPublisherService.enviarMensageKafka(request);
         return servicioMapper.toDto(guardado);
     }
 
