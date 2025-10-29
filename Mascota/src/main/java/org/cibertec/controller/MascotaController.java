@@ -2,8 +2,10 @@ package org.cibertec.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.cibertec.dto.MascotaRequestDto;
+import org.cibertec.dto.MascotaResponseDto;
 import org.cibertec.entity.Mascota;
 import org.cibertec.service.MascotaService;
+import org.cibertec.utils.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,41 +19,35 @@ public class MascotaController {
     private final MascotaService mascotaService;
 
     @GetMapping
-    public ResponseEntity<List<Mascota>> listaMascotas() {
-        List<Mascota> mascotas = mascotaService.listarMascotas();
-        return ResponseEntity.ok(mascotas);
+    public ResponseEntity<ApiResponse<List<MascotaResponseDto>>> listaMascotas() {
+        return mascotaService.listarMascotas();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Mascota> buscarMascotaPorId(@PathVariable Long id) {
-        return mascotaService.buscarMascotaPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ApiResponse<MascotaResponseDto>> buscarMascotaPorId(@PathVariable Long id) {
+        return mascotaService.buscarMascotaPorId(id);
     }
 
     @PostMapping
-    public ResponseEntity<Mascota> crearMascota(@RequestBody MascotaRequestDto requestDto) {
-        Mascota nuevaMascota = mascotaService.crearMascota(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevaMascota);
+    public ResponseEntity<ApiResponse<MascotaResponseDto>> guardarMascota(@RequestBody MascotaRequestDto requestDto) {
+        return mascotaService.guardarMascota(requestDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Mascota> actualizarMascota(
+    public ResponseEntity<ApiResponse<MascotaResponseDto>> actualizarMascota(
             @PathVariable Long id,
-            @RequestBody MascotaRequestDto mascotaDto) {
-        Mascota mascota = mascotaService.actualizarMascota(id, mascotaDto);
-        return ResponseEntity.ok(mascota);
+            @RequestBody MascotaRequestDto requestDto) {
+        return mascotaService.actualizarMascota(id, requestDto);
     }
 
     @GetMapping("/usuario/{idUsuario}")
-    public ResponseEntity<List<Mascota>> listarMascotasPorUsuario(@PathVariable Long idUsuario) {
-        List<Mascota> mascotas = mascotaService.listarMascotasPorUsuario(idUsuario);
-        return ResponseEntity.ok(mascotas);
+    public ResponseEntity<ApiResponse<List<MascotaResponseDto>>> listarMascotasPorUsuario(
+            @PathVariable Long idUsuario) {
+        return mascotaService.listarMascotasPorUsuario(idUsuario);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarMascota(@PathVariable Long id) {
-        mascotaService.eliminarMascota(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ApiResponse<Void>> eliminarMascota(@PathVariable Long id) {
+        return mascotaService.eliminarMascota(id);
     }
 }
