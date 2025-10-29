@@ -61,7 +61,7 @@ public class EmailKafkaSuscriberService {
                 message = message.substring(1, message.length() - 1)
                                  .replace("\\\"", "\"");
             }
-        	
+
             ServicioRequestDTO servicio = mapper.readValue(message, ServicioRequestDTO.class);
             // Buscar usuario Clientes
             ResponseEntity<List<Usuario>> response = usuarioClient.buscarUsuariosPorRol(3L);
