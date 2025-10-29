@@ -7,7 +7,7 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/Gimblet/DAW2-config
+          uri: https://github.com/Gimblet/config-server-dsw2
           force-pull: true
           default-label: main
       label: main
