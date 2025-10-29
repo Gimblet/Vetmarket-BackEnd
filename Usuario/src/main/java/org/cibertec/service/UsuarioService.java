@@ -31,24 +31,18 @@ public class UsuarioService {
 	
 
 	// LISTAR TODOS LOS USUARIOS
-	@CircuitBreaker(name = "usuarioService", fallbackMethod = "fallbackListarTodos")
-	@Retry(name="usuarioService")
     public List<Usuario> listarTodos() {
 					
         return usuarioRepository.findAll();
     }
 
     // BUSCAR USUARIO POR ID
-	@CircuitBreaker(name = "usuarioService", fallbackMethod = "fallbackBuscarPorId")
-	@Retry(name="usuarioService")
     public Optional<Usuario> buscarPorId(Long id) {
         return usuarioRepository.findById(id);
     }
     
     
     // BUSCAR USUARIO POR ROL
-	@CircuitBreaker(name = "usuarioService", fallbackMethod = "fallbackBuscarPorRol")
-	@Retry(name="usuarioService")
     public List<Usuario> buscarPorRol(Long idRol) {
         Rol rol=new Rol();
         rol.setIdRol(idRol);
@@ -59,8 +53,6 @@ public class UsuarioService {
 
 
     // CREAR NUEVO USUARIO
-	@CircuitBreaker(name = "usuarioService", fallbackMethod = "fallbackCrearUsuario")
-	@Retry(name="usuarioService")
     public Usuario crearUsuario(Usuario usuario) {
     	
     	
@@ -94,9 +86,7 @@ public class UsuarioService {
     	
         return usuarioRepository.save(usuario);
     }
-    
-	@CircuitBreaker(name = "usuarioService", fallbackMethod = "fallbackActualizarUsuario")
-	@Retry(name="usuarioService")
+
     public Usuario actualizarUsuario(Usuario nuevoUsuario) {
     	
     	
@@ -141,9 +131,6 @@ public class UsuarioService {
 
 
     // ELIMINAR USUARIO
-	
-	@CircuitBreaker(name = "usuarioService", fallbackMethod = "fallbackEliminarUsuario")
-	@Retry(name="usuarioService")
     public String eliminarUsuario(Long id) {
         if (usuarioRepository.existsById(id)) {
         	
@@ -159,45 +146,5 @@ public class UsuarioService {
         	throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
-	
-
-    
-	/*/*****************************/
-	/********** FallBacks **********/ 
-	/*/*****************************/
-    
-
-	public List<Usuario> fallbackListarTodos(Throwable ex) {
-        System.err.println("Fallback en listar todos los usuarios : " + ex.getMessage());
-        return List.of();
-    }
-    
-	public Usuario fallbackBuscarPorId(Long id, Throwable ex) {
-        System.err.println("Fallback en buscar usuario por id="+id + ": "+ ex.getMessage());
-        return new Usuario();
-    }
-    
-	public List<Usuario> fallbackBuscarPorRol(Long idRol, Throwable ex) {
-        System.err.println("Fallback en buscar usuarios por rol id="+ idRol + ": "  + ex.getMessage());
-        return List.of();
-    }
-    
-	public Usuario fallbackCrearUsuario(Usuario usuario, Throwable ex) throws Exception {
-        System.err.println("Fallback en crear usuario: " + ex.getMessage());
-        throw new Exception();
-    }
-    
-	public Usuario fallbackActualizarUsuario(Usuario usuario, Throwable ex) throws Exception {
-        System.err.println("Fallback en actualizar usuario: " + ex.getMessage());
-        throw new Exception();
-    }
-    
-	public String fallbackEliminarUsuario(Long id, Throwable ex) {
-		
-		 System.err.println("Fallback en eliminar el usuario con id=" + id + ": " + ex.getMessage());
-		 return "Error";
-    }
-		
-       
 
 }

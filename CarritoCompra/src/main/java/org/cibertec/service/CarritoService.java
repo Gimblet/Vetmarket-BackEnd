@@ -12,10 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.retry.annotation.Retry;
-
-
 @Service
 public class CarritoService {
 	@Autowired
@@ -24,14 +20,10 @@ public class CarritoService {
     @Autowired
     private ProductoClient pCli;
     
-    @CircuitBreaker(name = "carritoService", fallbackMethod = "fallbackObtenerProductos")
-    @Retry(name = "carritoService")
     public List<CarritoCompra> obtenerCarritoPorUsuario(Long idUsuario) {
         return cRep.findByIdUsuario(idUsuario);
     }
-    
-    @CircuitBreaker(name = "carritoService", fallbackMethod = "fallbackAgregarProducto")
-    @Retry(name = "carritoService")
+
     public CarritoCompra agregarProducto(Long idUsuario, Integer idProducto, Integer cantidad) {
     	Optional<CarritoCompra> existente = cRep.findByIdUsuarioAndIdProducto(idUsuario, idProducto);
         if (existente.isPresent()) {

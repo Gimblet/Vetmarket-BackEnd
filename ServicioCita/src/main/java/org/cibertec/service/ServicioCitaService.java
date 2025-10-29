@@ -24,15 +24,11 @@ public class ServicioCitaService {
         Integer count = servCitRep.contarCitaPorServicioYFecha(idServicio, fechaCita);
         return count < 5;
     }
-	
-    
-    @CircuitBreaker(name = "servicioCitaService", fallbackMethod = "fallbackBuscarServicioPorId")
-    @Retry(name = "servicioCitaService")
+
 	public ResponseEntity<ServicioResponseDTO> buscarServicioPorId(Integer idServicio) {
         return serCli.buscarServicioPorId(idServicio);
         
     }
-
 
     public ResponseEntity<ServicioResponseDTO> fallbackBuscarServicioPorId(Integer idServicio, Throwable ex) {
         System.err.println("Fallback en buscarServicioPorId(idServicio=" + idServicio + "): " + ex.getMessage());
