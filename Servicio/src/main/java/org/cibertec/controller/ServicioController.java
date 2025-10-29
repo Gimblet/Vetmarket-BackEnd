@@ -1,13 +1,9 @@
 package org.cibertec.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.cibertec.dto.ServicioRequestDTO;
 import org.cibertec.dto.ServicioResponseDTO;
-import org.cibertec.entity.Producto;
 import org.cibertec.service.ServicioService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/servicios")
