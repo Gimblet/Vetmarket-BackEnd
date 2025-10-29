@@ -15,7 +15,7 @@ public class KafkaConf {
     @Value("${app.topic.name}")
     private String topicName;
 
-    @Value("servicio-notification")
+    @Value("${app.servicio.topic.name}")
     private String servitopicName;
 
     @Value("${spring.kafka.bootstrap-servers}")

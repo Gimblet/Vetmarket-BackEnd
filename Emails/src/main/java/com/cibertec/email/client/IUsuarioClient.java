@@ -1,13 +1,16 @@
 package com.cibertec.email.client;
 
+import java.util.List;
+
 import org.cibertec.entity.Usuario;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "Usuario", url = "localhost:8080/usuario/usuario")
 public interface IUsuarioClient {
 
-    @GetMapping("/{id}")
-    Usuario getById(@PathVariable Long id);
+	@GetMapping("/rol/{idRol}")
+    public ResponseEntity<List<Usuario>> buscarUsuariosPorRol(@PathVariable Long idRol);
 }

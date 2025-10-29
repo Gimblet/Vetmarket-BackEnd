@@ -16,7 +16,7 @@ public class KafkaPublisherService {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    @Value("${app.topic.name}")
+    @Value("${app.servicio.topic.name}")
     private String servitopicName;
 
 

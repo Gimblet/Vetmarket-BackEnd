@@ -5,8 +5,12 @@ import com.cibertec.email.dto.ProductoRequestDTO;
 import com.cibertec.email.dto.ServicioRequestDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
+
 import org.cibertec.entity.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -20,17 +24,25 @@ public class EmailKafkaSuscriberService {
         ObjectMapper mapper = new ObjectMapper();
         try {
             ProductoRequestDTO producto = mapper.readValue(msg, ProductoRequestDTO.class);
-            Usuario usuario = usuarioClient.getById(producto.getIdUsuario());
+            ResponseEntity<List<Usuario>> response = usuarioClient.buscarUsuariosPorRol(3L);
+            List<Usuario> usuarios = response.getBody();
 
             System.out.println(">>>>>>>>>>> Nuevo Mensaje >>>>>>>>>>");
-            System.out.println("Asunto: Nuevo producto de " + usuario.getUsername());
-            System.out.println("Destinatario: " + usuario.getCorreo());
-            System.out.println("Cuerpo:");
-            System.out.println(">> Hola, " + usuario.getUsername() + " acaba de agregar un nuevo producto a su tienda virtual!");
-            System.out.println(">> Producto: " + producto.getNombre());
-            System.out.println(">> Descripcion: " + producto.getDescripcion());
-            System.out.println(">> Precio: " + producto.getPrecio());
-            System.out.println(">> Stock: " + producto.getStock());
+            if (usuarios != null && !usuarios.isEmpty()) {
+                for (Usuario usuario : usuarios) {
+                    System.out.println("------------------------------------");
+                    System.out.println("Asunto: Nuevo producto disponible");
+                    System.out.println("Destinatario: " + usuario.getCorreo());
+                    System.out.println("Cuerpo:");
+                    System.out.println(">> Hola, " + usuario.getNombre() + " "+usuario.getApellido()+ "!");
+                    System.out.println(">> Se ha agregado un nuevo producto a la tienda virtual.");
+                    System.out.println(">> Producto: " + producto.getNombre());
+                    System.out.println(">> Descripción: " + producto.getDescripcion());
+                    System.out.println(">> Precio: S/ " + producto.getPrecio());
+                    System.out.println(">> Solo hay " + producto.getStock()+" productos disponibles");
+                    System.out.println(">> ¡No te lo pierdas!\n");
+                }
+            }
             System.out.println("\nEnviando correo Electronico...\n");
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -40,27 +52,40 @@ public class EmailKafkaSuscriberService {
 
     // Servicio
 
-    @KafkaListener(topics = "servicio-notification", groupId = "${spring.kafka.consumer.group-id}")
-    public void Escuchar(String mesage) {
+    @KafkaListener(topics = "${app.servicio.topic.name}", groupId = "${spring.kafka.consumer.group-id}")
+    public void Escuchar(String message) {
         ObjectMapper mapper = new ObjectMapper();
         try {
 
-            ServicioRequestDTO servicio = mapper.readValue(mesage, ServicioRequestDTO.class);
-            // Obtener usuario por idUsuario
-            Usuario usuario = usuarioClient.getById(servicio.getIdUsuario());
+        	if (message.startsWith("\"") && message.endsWith("\"")) {
+                message = message.substring(1, message.length() - 1)
+                                 .replace("\\\"", "\"");
+            }
+        	
+            ServicioRequestDTO servicio = mapper.readValue(message, ServicioRequestDTO.class);
+            // Buscar usuario Clientes
+            ResponseEntity<List<Usuario>> response = usuarioClient.buscarUsuariosPorRol(3L);
+            List<Usuario> usuarios = response.getBody();
 
             System.out.println(">>>>>>>>>>> Nuevo Mensaje >>>>>>>>>>");
-            System.out.println("Asunto: Nuevo servicio de " + usuario.getUsername());
-            System.out.println("Destinatario: " + usuario.getCorreo());
-            System.out.println("Cuerpo:");
-            System.out.println(">> Hola, " + usuario.getUsername() + " se agrego nuevo servicio a su catálogo!");
-            System.out.println(">> Servicio: " + servicio.getNombre());
-            System.out.println(">> Descripcion: " + servicio.getDescripcion());
-            System.out.println(">> Precio: " + servicio.getPrecio());
+            if (usuarios != null || !usuarios.isEmpty()) {
+            	for (Usuario usuario : usuarios) {
+                    System.out.println("------------------------------------");
+                    System.out.println("Asunto: Nuevo servicio disponible");
+                    System.out.println("Destinatario: " + usuario.getCorreo());
+                    System.out.println("Cuerpo:");
+                    System.out.println(">> Hola, " + usuario.getNombre() + " " + usuario.getApellido() + "!");
+                    System.out.println(">> Se ha agregado un nuevo servicio al catálogo.");
+                    System.out.println(">> Servicio: " + servicio.getNombre());
+                    System.out.println(">> Descripción: " + servicio.getDescripcion());
+                    System.out.println(">> Precio: S/ " + servicio.getPrecio());
+                    System.out.println(">> ¡Aprovecha esta nueva opción para tu mascota!\n");
+                }
+            }
             System.out.println("\nEnviando correo Electronico...\n");
 
         } catch (Exception e) { // Mejor que JsonProcessingException solo
-            System.err.println("Error procesando mensaje de Kafka: " + mesage);
+            System.err.println("Error procesando mensaje de Kafka: " + message);
             e.printStackTrace(); // O loguea adecuadamente
         }
     }
