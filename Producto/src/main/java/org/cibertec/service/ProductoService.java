@@ -8,7 +8,6 @@ import org.cibertec.mapper.ProductoMapper;
 import org.cibertec.repository.IProductoRepository;
 import org.cibertec.repository.IUsuarioRepository;
 import org.cibertec.utils.ApiResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,24 +20,16 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ProductoService {
-    private IProductoRepository productoRepository;
-    private IUsuarioRepository usuarioRepository;
-
+    private final IProductoRepository productoRepository;
+    private final IUsuarioRepository usuarioRepository;
     private final ProductoMapper productoMapper;
-
-    @Autowired
-    public ProductoService(IProductoRepository productoRepository,
-                           IUsuarioRepository usuarioRepository,
-                           ProductoMapper productoMapper) {
-        this.productoRepository = productoRepository;
-        this.usuarioRepository = usuarioRepository;
-        this.productoMapper = productoMapper;
-    }
-
 
     public ResponseEntity<ApiResponse<ProductoResponseDTO>> guardar(ProductoRequestDTO productoRequestDTO, MultipartFile imagen) {
         if (!usuarioRepository.existsById(productoRequestDTO.getIdUsuario())) {
-            return ResponseEntity.notFound().build();
+            ApiResponse<ProductoResponseDTO> response =
+                    new ApiResponse<>(false, "No se pudo encontrar el Usuario con ID " + productoRequestDTO.getIdUsuario(), productoMapper.toDTORequested(productoRequestDTO));
+
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
 
         Producto productoEntidad = productoMapper.toEntitySaved(productoRequestDTO);
@@ -62,41 +53,79 @@ public class ProductoService {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<ProductoResponseDTO> buscarProductoPorID(int id) {
-        return ResponseEntity.ok(productoRepository.findById(id)
-                .map(productoMapper::toDto)
-                .orElseThrow(() -> new IllegalArgumentException("No existe el producto con el id: " + id)));
+    public ResponseEntity<ApiResponse<ProductoResponseDTO>> buscarProductoPorID(int id) {
+        Optional<Producto> productoEntidad = productoRepository.findById(id);
+        if (productoEntidad.isEmpty()) {
+            ApiResponse<ProductoResponseDTO> response = new ApiResponse<>(false, "No se enconctro el producto con ID: " + id, null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        ApiResponse<ProductoResponseDTO> response =
+                new ApiResponse<>(true, "Producto encontrado con exito", productoMapper.toDto(productoEntidad.get()));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
     }
 
-    public ResponseEntity<List<ProductoResponseDTO>> obtenerProductos() {
-        return ResponseEntity.ok(productoRepository.findAll()
+    public ResponseEntity<ApiResponse<List<ProductoResponseDTO>>> obtenerProductos() {
+        List<ProductoResponseDTO> list = productoRepository.findAll()
+                .stream()
+                .map(productoMapper::toDto)
+                .toList();
+        ApiResponse<List<ProductoResponseDTO>> response =
+                new ApiResponse<>(true, "Lista de Productos cargada exitosamente", list);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    public ResponseEntity<ApiResponse<List<ProductoResponseDTO>>> buscarProductoPorNombre(String nombre) {
+        Optional<List<Producto>> listaProductos = productoRepository.findAllByNombreIgnoreCaseContaining(nombre);
+
+        if (listaProductos.isEmpty()) {
+            ApiResponse<List<ProductoResponseDTO>> response =
+                    new ApiResponse<>(false, "No se encontro ningun producto con el nombre: " + nombre, null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        Optional<List<ProductoResponseDTO>> listaDTO = listaProductos.map(productos -> productos
                 .stream()
                 .map(productoMapper::toDto)
                 .toList());
+
+        ApiResponse<List<ProductoResponseDTO>> response =
+                new ApiResponse<>(true, "Lista de productos con el nombre: " + nombre, listaDTO.get());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<List<ProductoResponseDTO>> buscarProductoPorNombre(String nombre) {
-        Optional<List<Producto>> listaProductos = productoRepository.findAllByNombreIgnoreCaseContaining(nombre);
-        return listaProductos.map(productos -> ResponseEntity.ok(productos
-                .stream()
-                .map(productoMapper::toDto)
-                .toList())).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    public ResponseEntity<List<ProductoResponseDTO>> obtenerProductosPorVeterinario(Long idVeterinario) {
+    public ResponseEntity<ApiResponse<List<ProductoResponseDTO>>> obtenerProductosPorVeterinario(Long idVeterinario) {
         Optional<List<Producto>> listaProductos = productoRepository.findAllByUsuario_IdUsuario(idVeterinario);
-        return listaProductos.map(productos -> ResponseEntity.ok(productos
+
+        if (listaProductos.isEmpty()) {
+            ApiResponse<List<ProductoResponseDTO>> response =
+                    new ApiResponse<>(false, "No se encontro ningun producto para el veterinario con ID : " + idVeterinario, null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        Optional<List<ProductoResponseDTO>> listaDTO = listaProductos.map(productos -> productos
                 .stream()
                 .map(productoMapper::toDto)
-                .toList())).orElseGet(() -> ResponseEntity.notFound().build());
+                .toList());
+
+        ApiResponse<List<ProductoResponseDTO>> response =
+                new ApiResponse<>(true, "Lista de productos para el veterinario con ID : " + idVeterinario, listaDTO.get());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<String> actualizarProductoPorId(int id,
+    public ResponseEntity<ApiResponse<ProductoResponseDTO>> actualizarProductoPorId(int id,
                                                           ProductoRequestDTO producto,
                                                           MultipartFile imagen) {
-        if (!productoRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
+        if (!usuarioRepository.existsById(producto.getIdUsuario())) {
+            ApiResponse<ProductoResponseDTO> response =
+                    new ApiResponse<>(false, "No se pudo encontrar el Usuario con ID " + producto.getIdUsuario(), productoMapper.toDTORequested(producto));
+
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
+
 
         try {
             Producto productoHelper = productoRepository.findById(id).get();
@@ -110,8 +139,10 @@ public class ProductoService {
                 productoEntidad.setImg(productoHelper.getImg());
             }
 
-            productoRepository.save(productoEntidad);
-            return ResponseEntity.ok("Producto con ID : " + productoEntidad.getIdProducto() + "actualizado con exito");
+            ApiResponse<ProductoResponseDTO> response =
+                    new ApiResponse<>(true, "producto actualizado con exito", productoMapper.toDto(productoEntidad));
+
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
 
         } catch (IOException e) {
             System.out.println("Hubo un error al actualizar el archivo de imagen: " + e.getMessage());

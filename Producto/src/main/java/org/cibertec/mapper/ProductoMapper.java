@@ -24,6 +24,16 @@ public class ProductoMapper {
                 .build();
     }
 
+    public ProductoResponseDTO toDTORequested(ProductoRequestDTO productoRequestDTO) {
+        return ProductoResponseDTO.builder()
+                .precio(productoRequestDTO.getPrecio())
+                .stock(productoRequestDTO.getStock())
+                .nombre(productoRequestDTO.getNombre())
+                .descripcion(productoRequestDTO.getDescripcion())
+                .idUsuario(productoRequestDTO.getIdUsuario())
+                .build();
+    }
+
     public Producto toEntity(ProductoRequestDTO productoRequestDTO, Usuario usuario) {
         return Producto.builder()
                 .nombre(productoRequestDTO.getNombre())

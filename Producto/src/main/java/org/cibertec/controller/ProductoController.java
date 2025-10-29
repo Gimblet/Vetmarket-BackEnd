@@ -25,27 +25,27 @@ public class ProductoController {
     }
 
     @GetMapping("/listar")
-    private ResponseEntity<List<ProductoResponseDTO>> obtenerProductos() {
+    private ResponseEntity<ApiResponse<List<ProductoResponseDTO>>> obtenerProductos() {
         return productoService.obtenerProductos();
     }
 
     @GetMapping(value = "/buscar", params = "id")
-    private ResponseEntity<ProductoResponseDTO> obtenerProductoPorID(@RequestParam int id) {
+    private ResponseEntity<ApiResponse<ProductoResponseDTO>> obtenerProductoPorID(@RequestParam int id) {
         return productoService.buscarProductoPorID(id);
     }
 
     @GetMapping(value = "/buscar", params = "nombre")
-    private ResponseEntity<List<ProductoResponseDTO>> obtenerProductoPorNombre(@RequestParam String nombre) {
+    private ResponseEntity<ApiResponse<List<ProductoResponseDTO>>> obtenerProductoPorNombre(@RequestParam String nombre) {
         return productoService.buscarProductoPorNombre(nombre);
     }
 
     @GetMapping(value = "/buscar", params = "veterinario")
-    private ResponseEntity<List<ProductoResponseDTO>> obtenerProductosPorVeterinario(@RequestParam Long veterinario) {
+    private ResponseEntity<ApiResponse<List<ProductoResponseDTO>>> obtenerProductosPorVeterinario(@RequestParam Long veterinario) {
         return productoService.obtenerProductosPorVeterinario(veterinario);
     }
 
     @PutMapping(value = "/actualizar", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    private ResponseEntity<String> actualizarProductoPorId(@RequestParam int id,
+    private ResponseEntity<ApiResponse<ProductoResponseDTO>> actualizarProductoPorId(@RequestParam int id,
                                                            @RequestPart ProductoRequestDTO producto,
                                                            @RequestPart(required = false) MultipartFile imagen) {
         return productoService.actualizarProductoPorId(id, producto, imagen);
