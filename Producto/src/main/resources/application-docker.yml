@@ -1,9 +1,0 @@
-spring:
-  application:
-    name: Producto
-  config:
-    import: configserver:http://config-server:8888
-  cloud:
-    config:
-      label: docker
-      profile: docker

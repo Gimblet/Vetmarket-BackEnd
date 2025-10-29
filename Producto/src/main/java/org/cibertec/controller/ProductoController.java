@@ -3,6 +3,7 @@ package org.cibertec.controller;
 import org.cibertec.dto.ProductoRequestDTO;
 import org.cibertec.dto.ProductoResponseDTO;
 import org.cibertec.service.ProductoService;
+import org.cibertec.utils.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,8 @@ public class ProductoController {
     private ProductoService productoService;
 
     @PostMapping(value = "/guardar", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    private ResponseEntity<ProductoResponseDTO> guardarProducto(@RequestPart ProductoRequestDTO productoRequestDTO,
-                                                                @RequestPart(required = false) MultipartFile imagen) {
+    private ResponseEntity<ApiResponse<ProductoResponseDTO>> guardarProducto(@RequestPart ProductoRequestDTO productoRequestDTO,
+                                                        @RequestPart(required = false) MultipartFile imagen) {
         return productoService.guardar(productoRequestDTO, imagen);
     }
 
