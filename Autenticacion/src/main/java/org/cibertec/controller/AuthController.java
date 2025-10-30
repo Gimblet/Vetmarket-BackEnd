@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.cibertec.dto.LoginRequestDto;
 import org.cibertec.dto.LoginResponseDto;
 import org.cibertec.service.IAuthService;
+import org.cibertec.utils.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,8 +19,7 @@ public class AuthController {
     private final IAuthService authService;
 
     @PostMapping("/iniciarSesion")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
-        LoginResponseDto responseDto = authService.authenticate(loginRequestDto);
-        return ResponseEntity.ok(responseDto);
+    public ResponseEntity<ApiResponse<LoginResponseDto>> login(@RequestBody LoginRequestDto loginRequestDto) {
+        return authService.authenticate(loginRequestDto);
     }
 }

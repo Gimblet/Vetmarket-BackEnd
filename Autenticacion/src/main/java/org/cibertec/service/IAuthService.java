@@ -2,7 +2,9 @@ package org.cibertec.service;
 
 import org.cibertec.dto.LoginRequestDto;
 import org.cibertec.dto.LoginResponseDto;
+import org.cibertec.utils.ApiResponse;
+import org.springframework.http.ResponseEntity;
 
 public interface IAuthService {
-    LoginResponseDto authenticate(LoginRequestDto loginRequestDto);
+    ResponseEntity<ApiResponse<LoginResponseDto>> authenticate(LoginRequestDto loginRequestDto);
 }
