@@ -9,6 +9,7 @@ import org.cibertec.entity.CarritoCompra;
 import org.cibertec.repository.CarritoRepository;
 import org.cibertec.utils.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,11 +22,21 @@ public class CarritoService {
     @Autowired
     private ProductoClient pCli;
     
-    public List<CarritoCompra> obtenerCarritoPorUsuario(Long idUsuario) {
-        return cRep.findByIdUsuario(idUsuario);
+    public ResponseEntity<ApiResponse<List<CarritoCompra>>> obtenerCarritoPorUsuario(Long idUsuario) {
+        List<CarritoCompra> compraList = cRep.findByIdUsuario(idUsuario);
+
+        if (compraList.isEmpty()) {
+            ApiResponse<List<CarritoCompra>> response =
+                    new ApiResponse<>(false, "No se encontro ningun producto/servicio para el cliente con ID : " + idUsuario, null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        ApiResponse<List<CarritoCompra>> response =
+                new ApiResponse<>(true, "Lista de carrito para el cliente con ID : " + idUsuario, compraList);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public CarritoCompra agregarProducto(Long idUsuario, Integer idProducto, Integer cantidad) {
+    public ResponseEntity<ApiResponse<CarritoCompra>> agregarProducto(Long idUsuario, Integer idProducto, Integer cantidad) {
     	Optional<CarritoCompra> existente = cRep.findByIdUsuarioAndIdProducto(idUsuario, idProducto);
         if (existente.isPresent()) {
             throw new RuntimeException("El producto ya existe en el carrito");
@@ -47,27 +58,17 @@ public class CarritoService {
         carrito.setCantidad(cantidad);
         carrito.setTotal(producto.getPrecio() * cantidad);
 
-        return cRep.save(carrito);
+        CarritoCompra carritoGuardado = cRep.save(carrito);
+
+        ApiResponse<CarritoCompra> respuesta =
+                new ApiResponse<>(true, "Carrito agregado con exito", carritoGuardado);
+
+        return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
+
     }
     
     @Transactional
     public void eliminarProducto(Long idUsuario, Integer idProducto) {
         cRep.deleteByIdUsuarioAndIdProducto(idUsuario, idProducto);
     }
-    
-    
-    public List<CarritoCompra> fallbackObtenerProductos(Long idUsuario, Throwable ex) {
-        CarritoCompra car=new CarritoCompra();
-        car.setDescripcion("Fallback obtener carrito: " + ex.getMessage());
-        return List.of(car);
-    }
-
-    public CarritoCompra fallbackAgregarProducto(Long idUsuario, Integer idProducto, Integer cantidad, Throwable ex) {
-        CarritoCompra carrito = new CarritoCompra();
-        carrito.setNombreProducto("Error al agregar producto: " + ex.getMessage());
-        carrito.setCantidad(0);
-        carrito.setTotal(0.0);
-        return carrito;
-    }
-
 }

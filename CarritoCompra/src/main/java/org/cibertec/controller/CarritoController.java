@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.cibertec.dto.DetalleDto;
 import org.cibertec.entity.CarritoCompra;
 import org.cibertec.service.CarritoService;
+import org.cibertec.utils.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,9 +31,9 @@ public class CarritoController {
 		if (token == null || token.isEmpty() || !token.startsWith("Bearer ")) {
 	        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 	    }
-		
-	    List<CarritoCompra> carrito = cSer.obtenerCarritoPorUsuario(idUsuario);
-	    List<DetalleDto> detalles = carrito.stream().map(item -> {
+
+		ResponseEntity<ApiResponse<List<CarritoCompra>>> carrito = cSer.obtenerCarritoPorUsuario(idUsuario);
+	    List<DetalleDto> detalles = carrito.getBody().getData().stream().map(item -> {
 	        DetalleDto dto = new DetalleDto();
 	        dto.setIdProducto(item.getIdProducto());
 	        dto.setNombre(item.getNombreProducto());
@@ -46,7 +47,7 @@ public class CarritoController {
 	}
 	
 	@PostMapping("/agregar")
-	public ResponseEntity<CarritoCompra> agregarProducto(@RequestHeader(name = "Authorization", required = false) String token,
+	public ResponseEntity<ApiResponse<CarritoCompra>> agregarProducto(@RequestHeader(name = "Authorization", required = false) String token,
 	        @RequestParam Long idUsuario,
 	        @RequestParam Integer idProducto,
 	        @RequestParam Integer cantidad) {
@@ -56,8 +57,7 @@ public class CarritoController {
 	        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 	    }
 		
-	    CarritoCompra carrito = cSer.agregarProducto(idUsuario, idProducto, cantidad);
-	    return ResponseEntity.ok(carrito);
+	    return cSer.agregarProducto(idUsuario, idProducto, cantidad);
 	}
 	
 	@DeleteMapping("/eliminar")
