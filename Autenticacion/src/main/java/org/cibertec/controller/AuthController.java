@@ -1,5 +1,6 @@
 package org.cibertec.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.cibertec.dto.LoginRequestDto;
@@ -19,7 +20,7 @@ public class AuthController {
     private final IAuthService authService;
 
     @PostMapping("/iniciarSesion")
-    public ResponseEntity<ApiResponse<LoginResponseDto>> login(@RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<ApiResponse<LoginResponseDto>> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
         return authService.authenticate(loginRequestDto);
     }
 }
