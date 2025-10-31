@@ -7,6 +7,7 @@ import org.cibertec.client.ProductoClient;
 import org.cibertec.dto.ProductoResponseDTO;
 import org.cibertec.entity.CarritoCompra;
 import org.cibertec.repository.CarritoRepository;
+import org.cibertec.utils.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -30,8 +31,8 @@ public class CarritoService {
             throw new RuntimeException("El producto ya existe en el carrito");
         }
     	
-        ResponseEntity<ProductoResponseDTO> response = pCli.obtenerProductoPorID(idProducto);
-        ProductoResponseDTO producto = response.getBody();
+        ResponseEntity<ApiResponse<ProductoResponseDTO>> response = pCli.obtenerProductoPorID(idProducto);
+        ProductoResponseDTO producto = response.getBody().getData();
 
         if (producto == null || producto.getNombre().contains("no disponible")) {
             throw new RuntimeException("Producto no disponible o servicio de productos caído");
