@@ -144,6 +144,8 @@ public class ProductoService {
                 productoEntidad.setImg(productoHelper.getImg());
             }
 
+            productoRepository.save(productoEntidad);
+
             ApiResponse<ProductoResponseDTO> response =
                     new ApiResponse<>(true, "producto actualizado con exito", productoMapper.toDto(productoEntidad));
 
