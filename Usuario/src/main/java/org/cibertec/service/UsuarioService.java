@@ -106,6 +106,8 @@ public class UsuarioService {
         rol.setIdRol(idRol);
         usuario.setRol(rol);
 
+        usuarioRepository.save(usuario);
+
         ApiResponse<Usuario> response =
                 new ApiResponse<>(true, "Usuario creado correctamente", usuario);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
