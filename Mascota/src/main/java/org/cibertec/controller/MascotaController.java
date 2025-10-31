@@ -1,12 +1,11 @@
 package org.cibertec.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.cibertec.dto.MascotaRequestDto;
 import org.cibertec.dto.MascotaResponseDto;
-import org.cibertec.entity.Mascota;
 import org.cibertec.service.MascotaService;
 import org.cibertec.utils.ApiResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +28,7 @@ public class MascotaController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<MascotaResponseDto>> guardarMascota(@RequestBody MascotaRequestDto requestDto) {
+    public ResponseEntity<ApiResponse<MascotaResponseDto>> guardarMascota(@Valid @RequestBody MascotaRequestDto requestDto) {
         return mascotaService.guardarMascota(requestDto);
     }
 
