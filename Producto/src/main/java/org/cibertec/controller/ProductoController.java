@@ -1,7 +1,11 @@
 package org.cibertec.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import jakarta.validation.Valid;
 import org.cibertec.dto.ProductoRequestDTO;
 import org.cibertec.dto.ProductoResponseDTO;
+import org.cibertec.entity.Producto;
 import org.cibertec.service.ProductoService;
 import org.cibertec.utils.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
@@ -19,14 +25,19 @@ public class ProductoController {
     private ProductoService productoService;
 
     @PostMapping(value = "/guardar", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    private ResponseEntity<ApiResponse<ProductoResponseDTO>> guardarProducto(@RequestPart ProductoRequestDTO productoRequestDTO,
-                                                        @RequestPart(required = false) MultipartFile imagen) {
+    private ResponseEntity<ApiResponse<ProductoResponseDTO>> guardarProducto(@Valid @RequestPart ProductoRequestDTO productoRequestDTO,
+                                                                             @RequestPart(required = false) MultipartFile imagen) {
         return productoService.guardar(productoRequestDTO, imagen);
     }
 
     @GetMapping("/listar")
     private ResponseEntity<ApiResponse<List<ProductoResponseDTO>>> obtenerProductos() {
         return productoService.obtenerProductos();
+    }
+
+    @GetMapping("/listarJSON")
+    private ResponseEntity<String> exportarAJSON() {
+        return productoService.obtenerProductosGeneral();
     }
 
     @GetMapping(value = "/buscar", params = "id")
@@ -46,8 +57,8 @@ public class ProductoController {
 
     @PutMapping(value = "/actualizar", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     private ResponseEntity<ApiResponse<ProductoResponseDTO>> actualizarProductoPorId(@RequestParam int id,
-                                                           @RequestPart ProductoRequestDTO producto,
-                                                           @RequestPart(required = false) MultipartFile imagen) {
+                                                                                     @Valid @RequestPart ProductoRequestDTO producto,
+                                                                                     @RequestPart(required = false) MultipartFile imagen) {
         return productoService.actualizarProductoPorId(id, producto, imagen);
     }
 

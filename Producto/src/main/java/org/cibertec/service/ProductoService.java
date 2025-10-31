@@ -1,5 +1,7 @@
 package org.cibertec.service;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import org.cibertec.dto.ProductoRequestDTO;
 import org.cibertec.dto.ProductoResponseDTO;
@@ -14,6 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -117,8 +122,8 @@ public class ProductoService {
     }
 
     public ResponseEntity<ApiResponse<ProductoResponseDTO>> actualizarProductoPorId(int id,
-                                                          ProductoRequestDTO producto,
-                                                          MultipartFile imagen) {
+                                                                                    ProductoRequestDTO producto,
+                                                                                    MultipartFile imagen) {
         if (!usuarioRepository.existsById(producto.getIdUsuario())) {
             ApiResponse<ProductoResponseDTO> response =
                     new ApiResponse<>(false, "No se pudo encontrar el Usuario con ID " + producto.getIdUsuario(), productoMapper.toDTORequested(producto));
@@ -186,5 +191,20 @@ public class ProductoService {
 
     }
 
+    public ResponseEntity<String> obtenerProductosGeneral() {
+        try {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            List<ProductoResponseDTO> lista = productoRepository.findAll()
+                    .stream()
+                    .map(productoMapper::toDto)
+                    .toList();
+            String json = gson.toJson(lista);
+            String userHome = System.getProperty("user.home");
+            Files.write(Paths.get(userHome, "productos" + LocalDateTime.now() + ".json"), json.getBytes());
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
